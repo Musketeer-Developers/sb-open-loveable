@@ -4,12 +4,21 @@
 export const appConfig = {
   // Vercel Sandbox Configuration
   vercelSandbox: {
-    // Sandbox timeout in minutes
-    timeoutMinutes: 15,
+    /**
+     * Sandbox timeout in minutes (env overrides default).
+     * Priority:
+     *   1) SANDBOX_TIMEOUT_MS (milliseconds)
+     *   2) SANDBOX_TIMEOUT_MINUTES (minutes)
+     *   3) default 45 minutes
+     */
+    timeoutMinutes: Number(process.env.SANDBOX_TIMEOUT_MINUTES ?? 45),
 
     // Convert to milliseconds for Vercel Sandbox API
     get timeoutMs() {
-      return this.timeoutMinutes * 60 * 1000;
+      const msFromEnv = process.env.SANDBOX_TIMEOUT_MS
+        ? Number(process.env.SANDBOX_TIMEOUT_MS)
+        : undefined;
+      return msFromEnv ?? this.timeoutMinutes * 60 * 1000;
     },
 
     // Development server port (Vercel Sandbox typically uses 3000 for Next.js/React)
